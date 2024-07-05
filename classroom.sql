@@ -207,4 +207,11 @@ SELECT name FROM emp;
 
 -- SELECT AVG(marks) FROM student;
 SELECT name,marks FROM student WHERE marks > (SELECT AVG(marks) FROM student);
-SELECT name FROM student WHERE rollno%2 = 0;
+SELECT name, rollno FROM student WHERE rollno%2 = 0;
+SELECT name, rollno FROM student WHERE rollno IN (SELECT rollno FROM student WHERE rollno%2 = 0);
+SELECT MAX(marks) FROM (SELECT marks FROM student WHERE city = "Delhi") AS temp;
+
+CREATE VIEW view1 AS 
+SELECT rollno, name FROM student;
+
+ 
