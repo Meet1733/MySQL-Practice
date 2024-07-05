@@ -92,6 +92,119 @@ ALTER TABLE student DROP COLUMN stu_age;
 ALTER TABLE student RENAME TO stu;
 ALTER TABLE stu RENAME TO student;
 
-ALTER TABLE student CHANGE COLUMN name full_name VARCHAR(50);
+ALTER TABLE student CHANGE COLUMN full_name name VARCHAR(50);
 DELETE FROM student WHERE marks < 80;
 ALTER TABLE student DROP COLUMN grade;
+ALTER TABLE student ADD COLUMN grade VARCHAR(1);
+TRUNCATE TABLE student;
+
+-- JOINS
+-- 1) INNER JOIN
+SELECT * FROM student;
+
+CREATE TABLE course(
+	id INT PRIMARY KEY,
+    course VARCHAR(50)
+);
+
+INSERT INTO course (id,course) 
+VALUES
+(102, "english"),
+(105, "maths"),
+(103, "science"),
+(107, "geo");
+SELECT * FROM course;
+
+SELECT * 
+FROM student as s
+INNER JOIN course as c
+ON s.rollno = c.id;
+
+-- 2) LEFT JOIN
+SELECT * 
+FROM student AS s
+LEFT JOIN course AS c
+ON s.rollno = c.id;
+
+-- 3) RIGHT JOIN
+SELECT * 
+FROM student AS s
+RIGHT JOIN course AS c
+ON s.rollno = c.id;
+
+-- 4) FULL JOIN (LEFT JOIN UNION RIGHT JOIN)
+SELECT * 
+FROM student AS s
+LEFT JOIN course AS c
+ON s.rollno = c.id
+UNION
+SELECT * 
+FROM student AS s
+RIGHT JOIN course AS c
+ON s.rollno = c.id;
+
+-- 5) LEFT EXCLUSIVE JOIN
+SELECT * 
+FROM student AS s
+LEFT JOIN course AS c
+ON s.rollno = c.id
+WHERE c.id IS NULL;
+
+-- 5) RIGHT EXCLUSIVE JOIN
+SELECT * 
+FROM student AS s
+RIGHT JOIN course AS c
+ON s.rollno = c.id
+WHERE s.rollno IS NULL;
+
+-- 6) FULL EXCLUSIVE JOIN (Only left and right part together no common part)
+SELECT * 
+FROM student as a
+LEFT JOIN course as c
+ON a.rollno = c.id
+WHERE c.id IS NULL
+UNION
+SELECT * 
+FROM student as a
+RIGHT JOIN course as c
+ON a.rollno = c.id
+WHERE a.rollno IS NULL;
+
+-- 7) SELF JOIN (TABLE JOIN WITH ITSELF)
+CREATE TABLE emp(
+	id INT PRIMARY KEY,
+    name VARCHAR(50),
+    manager_id INT
+);
+
+INSERT INTO emp(id,name,manager_id) 
+VALUES
+(101, "meet", 103),
+(102, "raj", 104),
+(103, "jay", null),
+(104, "dev", 103);
+
+SELECT * FROM emp;
+
+SELECT a.name as manager_name, b.name 
+FROM emp AS a
+JOIN emp AS b
+ON a.id = b.manager_id;
+
+-- UNION combines SELECT result and give unique values
+SELECT name FROM emp
+UNION 
+SELECT name FROM emp;
+-- UNION ALL gives all values  
+
+-- DATA
+-- (101, "Meet", 94, "A", "Rajkot"),
+--  (102, "Raj", 87, "B", "Mumbai"),
+--  (103, "Jay", 76, "C", "Delhi"),
+--  (104, "Yash", 46, "D", "Delhi"),
+--  (105, "Adi", 88, "B", "Jaipur"),
+--  (106, "Aki", 70, "C", "Kota");
+
+-- SELECT AVG(marks) FROM student;
+SELECT name,marks FROM student WHERE marks > (SELECT AVG(marks) FROM student);
+SELECT name FROM student WHERE rollno%2 = 0;
